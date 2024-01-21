@@ -16,7 +16,7 @@
         <h1>Password Generator</h1>
 
         <div class="password">
-            <h2 class="pw-text"></h2>
+            <h2 class="pw-text" style="height: 30px;"></h2>
             <button class="copy"><i class="fa fa-clipboard" aria-hidden="true"></i></button>
         </div>
 
@@ -24,8 +24,8 @@
             <div class="length">
                 <div class="len-info">
                     <p>Character Length</p>
-                    <p>10</p>
-                    <input type="range" name="length" id="length">
+                    <p class="pw-length"></p>
+                    <input type="range" min="5" max="16" value="10" name="length" id="length">
                 </div>
             </div>
 
@@ -64,6 +64,7 @@
             <button class="generate">Generate</button>
         </div>
     </div>
+    <script type="text/javascript" src="app.js"></script>
 </body>
 
 </html>
