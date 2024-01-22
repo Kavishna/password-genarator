@@ -11,6 +11,7 @@ const weakIndicator = document.querySelector(".weak");
 const fairIndicator = document.querySelector(".fair");
 const goodIndicator = document.querySelector(".good");
 const excellentIndicator = document.querySelector(".excellent");
+const strengthText = document.querySelector(".strength-text");
 
 const generatePassword = (
   length = lengthInput.value,
@@ -21,11 +22,42 @@ const generatePassword = (
     .join("");
 };
 
+function getPasswordStrength(password) {
+  // Check length
+  var lengthScore = Math.min(password.length / 4, 4);
+
+  // Check if the password contains both uppercase and lowercase letters
+  var uppercase = /[A-Z]/.test(password);
+  var lowercase = /[a-z]/.test(password);
+  var caseScore = uppercase && lowercase ? 2 : 0;
+
+  // Check if the password contains at least one digit
+  var digitScore = /\d/.test(password) ? 2 : 0;
+
+  // Check if the password contains at least one special character
+  var specialCharScore = /[!@#$%^&*(),.?":{}|<>]/.test(password) ? 2 : 0;
+
+  // Calculate total score
+  var totalScore = lengthScore + caseScore + digitScore + specialCharScore;
+
+  // Determine password strength level
+  if (totalScore <= 4) {
+    return "Weak";
+  } else if (totalScore <= 7) {
+    return "Fair";
+  } else if (totalScore <= 10) {
+    return "Good";
+  } else {
+    return "Excellent";
+  }
+}
+
 uppercaseCheckbox.addEventListener("checked", function () {});
 
 generateButton.addEventListener("click", function () {
-  pwText.innerHTML = generatePassword();
-  console.log(generatePassword());
+  let password = generatePassword();
+  pwText.innerHTML = password;
+  strengthText.innerHTML = getPasswordStrength(password);
 });
 
 lengthInput.addEventListener("input", function (event) {
@@ -55,6 +87,7 @@ function getPasswordCombination() {
   if (symbolsCheckbox.checked) {
     combinedArray.push(...symbolsArray);
   }
+
   return combinedArray.join("");
 }
 
