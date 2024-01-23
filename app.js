@@ -9,7 +9,8 @@ const symbolsCheckbox = document.getElementById("symbols");
 const generateButton = document.querySelector(".generate");
 const weakIndicator = document.querySelector(".weak");
 const fairIndicator = document.querySelector(".fair");
-const goodIndicator = document.querySelector(".good");
+const strongIndicator = document.querySelector(".good");
+const poorIndicator = document.querySelector(".poor");
 const excellentIndicator = document.querySelector(".excellent");
 const strengthText = document.querySelector(".strength-text");
 
@@ -23,32 +24,32 @@ const generatePassword = (
 };
 
 function getPasswordStrength(password) {
-  // Check length
-  var lengthScore = Math.min(password.length / 4, 4);
+  var lengthScore = password.length >= 8 ? 1 : 0;
+  var uppercaseScore = /[A-Z]/.test(password) ? 1 : 0;
+  var lowercaseScore = /[a-z]/.test(password) ? 1 : 0;
+  var digitScore = /\d/.test(password) ? 1 : 0;
+  var specialCharScore = /[!@#$%^&*(),.?":{}|<>]/.test(password) ? 1 : 0;
 
-  // Check if the password contains both uppercase and lowercase letters
-  var uppercase = /[A-Z]/.test(password);
-  var lowercase = /[a-z]/.test(password);
-  var caseScore = uppercase && lowercase ? 2 : 0;
+  var totalScore =
+    lengthScore +
+    uppercaseScore +
+    lowercaseScore +
+    digitScore +
+    specialCharScore;
 
-  // Check if the password contains at least one digit
-  var digitScore = /\d/.test(password) ? 2 : 0;
+  console.log(specialCharScore);
 
-  // Check if the password contains at least one special character
-  var specialCharScore = /[!@#$%^&*(),.?":{}|<>]/.test(password) ? 2 : 0;
-
-  // Calculate total score
-  var totalScore = lengthScore + caseScore + digitScore + specialCharScore;
-
-  // Determine password strength level
-  if (totalScore <= 4) {
-    return "Weak";
-  } else if (totalScore <= 7) {
-    return "Fair";
-  } else if (totalScore <= 10) {
-    return "Good";
-  } else {
-    return "Excellent";
+  switch (totalScore) {
+    case 0:
+      return "Weak";
+    case 1:
+      return "Poor";
+    case 2:
+      return "Fair";
+    case 3:
+      return "Strong";
+    case 4:
+      return "Excellent";
   }
 }
 
@@ -57,7 +58,28 @@ uppercaseCheckbox.addEventListener("checked", function () {});
 generateButton.addEventListener("click", function () {
   let password = generatePassword();
   pwText.innerHTML = password;
-  strengthText.innerHTML = getPasswordStrength(password);
+  const passwordStrength = getPasswordStrength(password);
+  strengthText.innerHTML = passwordStrength;
+
+  switch (passwordStrength) {
+    case "Weak":
+      div.style.backgroundColor = "red";
+      break;
+    case "Poor":
+      div.style.backgroundColor = "blue";
+      break;
+    case "Fair":
+      div.style.backgroundColor = "green";
+      break;
+    case "Strong":
+      div.style.backgroundColor = "yellow";
+      break;
+    case "Excellent":
+      div.style.backgroundColor = "purple";
+      break;
+    default:
+      div.style.backgroundColor = "gray";
+  }
 });
 
 lengthInput.addEventListener("input", function (event) {
@@ -69,85 +91,56 @@ document.addEventListener("DOMContentLoaded", function () {
   lengthIndicator.innerHTML = lengthInput.value;
 });
 
+copyButton.addEventListener("click", () => {
+  navigator.clipboard.writeText(pwText.textContent);
+
+  copyButton.classList.add("active");
+
+  setTimeout(function () {
+    copyButton.classList.remove("active");
+  }, 500);
+});
+
 function getPasswordCombination() {
-  const combinedArray = [];
+  let combinedChars = "";
+
+  const symbolSet = "!@#$%^&*()_-+=[]{}<>?";
+  const upperCaseSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const lowerCaseSet = "abcdefghijklmnopqrstuvwxyz";
+  const numberSet = "0123456789";
 
   if (numbersCheckbox.checked) {
-    combinedArray.push(...numbersArray);
+    combinedChars += numberSet;
   }
 
   if (uppercaseCheckbox.checked) {
-    combinedArray.push(...uppercaseArray);
+    combinedChars += upperCaseSet;
   }
 
   if (lowercaseCheckbox.checked) {
-    combinedArray.push(...lowercaseArray);
+    combinedChars += lowerCaseSet;
   }
 
   if (symbolsCheckbox.checked) {
-    combinedArray.push(...symbolsArray);
+    combinedChars += symbolSet;
   }
-
-  return combinedArray.join("");
+  console.log(combinedChars);
+  return combinedChars;
 }
 
-const numbersArray = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
-const uppercaseArray = [
-  "A",
-  "B",
-  "C",
-  "D",
-  "E",
-  "F",
-  "G",
-  "H",
-  "I",
-  "J",
-  "K",
-  "L",
-  "M",
-  "N",
-  "O",
-  "P",
-  "Q",
-  "R",
-  "S",
-  "T",
-  "U",
-  "V",
-  "W",
-  "X",
-  "Y",
-  "Z",
-];
-const lowercaseArray = [
-  "a",
-  "b",
-  "c",
-  "d",
-  "e",
-  "f",
-  "g",
-  "h",
-  "i",
-  "j",
-  "k",
-  "l",
-  "m",
-  "n",
-  "o",
-  "p",
-  "q",
-  "r",
-  "s",
-  "t",
-  "u",
-  "v",
-  "w",
-  "x",
-  "y",
-  "z",
-];
-const symbolsArray = ["~", "!", "@", "-", "#", "$"];
+const slider = lengthInput;
+const min = slider.min;
+const max = slider.max;
+const value = slider.value;
 
-// console.log(getPasswordCombination());
+slider.style.background = `linear-gradient(to right, #a5ffaf 0%, #a5ffaf ${
+  ((value - min) / (max - min)) * 100
+}%, #18171e ${((value - min) / (max - min)) * 100}%, #18171e 100%)`;
+
+slider.oninput = function () {
+  this.style.background = `linear-gradient(to right, #a5ffaf 0%, #a5ffaf ${
+    ((this.value - this.min) / (this.max - this.min)) * 100
+  }%, #18171e ${
+    ((this.value - this.min) / (this.max - this.min)) * 100
+  }%, #18171e 100%)`;
+};
