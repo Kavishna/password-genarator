@@ -133,13 +133,6 @@ body {
     display: flex;
     margin-left: 8px;
   }
-
-  .score {
-    height: 16px;
-    width: 6px;
-    margin: 0 2px;
-    border: 1px solid #e4e5e9;
-  }
 }
 
 .generate {
@@ -150,6 +143,38 @@ body {
   background-color: #a5ffaf;
   border: 1px solid #a5ffaf;
   cursor: pointer;
+}
+
+.dimm {
+  color: #4e4d57;
+}
+
+.score {
+  height: 16px;
+  width: 6px;
+  margin: 0 2px;
+  border: 1px solid #e4e5e9;
+}
+
+.weak {
+  background-color: #ff5959;
+  border: 1px solid #ff5959;
+}
+.poor {
+  background-color: #ffa5a5;
+  border: 1px solid #ffa5a5;
+}
+.fair {
+  background-color: #ffe7a5;
+  border: 1px solid #ffe7a5;
+}
+.strong {
+  background-color: #a5f6ff;
+  border: 1px solid #a5f6ff;
+}
+.excellent {
+  background-color: #a5ffaf;
+  border: 1px solid #a5ffaf;
 }
 
 .generate:hover {
